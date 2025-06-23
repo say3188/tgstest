@@ -3,203 +3,877 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>편리한 부가세 계산기</title>
+    <title>완벽하게 작동하는 멀티 도구</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        }
-        .card-shadow {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        .input-focus:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-8">
-                    <h1 class="text-2xl font-bold text-blue-600">편리한 부가세 계산기</h1>
-                    <nav class="hidden md:flex space-x-6">
-                        <a href="#" class="text-blue-600 font-medium">부가세 계산기</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600">맞춤법 검사기</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600">만 나이 계산기</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600">내 아이피주소 확인</a>
-                        <a href="#" class="text-gray-600 hover:text-blue-600">글자수 세기</a>
-                    </nav>
-                </div>
-            </div>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-blue-600 mb-2">
+                <i class="fas fa-tools mr-3"></i>완벽한 멀티 도구
+            </h1>
+            <p class="text-gray-600">실제 AI가 처리하는 배경 제거, 업스케일링, PDF 변환 및 다양한 계산 도구</p>
         </div>
-    </header>
 
-    <!-- Main Banner -->
-    <section class="gradient-bg text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between">
-                <div class="flex-1">
-                    <div class="bg-white bg-opacity-20 rounded-full px-6 py-3 inline-block mb-4">
-                        <span class="text-white font-medium">계산서를 잘 발급했는지 궁금하신가요?</span>
-                    </div>
-                    <h2 class="text-4xl font-bold mb-4">정확한 부가세 계산기</h2>
-                    <p class="text-xl text-blue-100">빠르고 정확한 부가세 계산을 위한 최고의 도구</p>
-                </div>
-                <div class="hidden lg:block">
-                    <div class="bg-white bg-opacity-20 rounded-2xl p-6">
-                        <i class="fas fa-calculator text-6xl text-white"></i>
-                    </div>
-                </div>
-            </div>
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap justify-center mb-8 space-x-2">
+            <button onclick="showTab('vat')" id="tab-vat" class="tab-button bg-blue-500 text-white px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-calculator mr-2"></i>부가세 계산기
+            </button>
+            <button onclick="showTab('exchange')" id="tab-exchange" class="tab-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-exchange-alt mr-2"></i>환율 계산기
+            </button>
+            <button onclick="showTab('background')" id="tab-background" class="tab-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-cut mr-2"></i>AI 배경 제거
+            </button>
+            <button onclick="showTab('upscale')" id="tab-upscale" class="tab-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-expand-arrows-alt mr-2"></i>이미지 확대
+            </button>
+            <button onclick="showTab('pdf')" id="tab-pdf" class="tab-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-file-pdf mr-2"></i>PDF 변환
+            </button>
+            <button onclick="showTab('lunar')" id="tab-lunar" class="tab-button bg-gray-300 text-gray-700 px-4 py-2 rounded-lg mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i>음력 달력
+            </button>
         </div>
-    </section>
 
-    <!-- Calculator Section -->
-    <section class="py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Left Panel - Calculators -->
-                <div class="lg:col-span-2 space-y-8">
-                    <!-- Total Amount Calculator -->
-                    <div class="bg-white rounded-2xl p-8 card-shadow">
-                        <div class="gradient-bg text-white rounded-xl p-6 mb-6">
-                            <h3 class="text-2xl font-bold mb-2">합계 금액을 알고 계신 고객님</h3>
-                            <p class="text-blue-100">합계금액(TOTAL)</p>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">금액을 입력해주세요</label>
-                                <div class="relative">
-                                    <input type="number" id="totalAmount" placeholder="0" 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus text-lg">
-                                    <span class="absolute right-4 top-3 text-gray-500">원</span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <p class="text-sm text-gray-600 mb-1">공급가액</p>
-                                    <p class="text-xl font-bold text-blue-600" id="supplyFromTotal">0원</p>
-                                </div>
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <p class="text-sm text-gray-600 mb-1">부가세</p>
-                                    <p class="text-xl font-bold text-blue-600" id="vatFromTotal">0원</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Supply Value Calculator -->
-                    <div class="bg-white rounded-2xl p-8 card-shadow">
-                        <div class="gradient-bg text-white rounded-xl p-6 mb-6">
-                            <h3 class="text-2xl font-bold mb-2">공급가액을 알고 계신 고객님</h3>
-                            <p class="text-blue-100">공급가액(VALUE OF SUPPLY)</p>
-                        </div>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">금액을 입력해주세요</label>
-                                <div class="relative">
-                                    <input type="number" id="supplyAmount" placeholder="0" 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus text-lg">
-                                    <span class="absolute right-4 top-3 text-gray-500">원</span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <p class="text-sm text-gray-600 mb-1">부가세</p>
-                                    <p class="text-xl font-bold text-blue-600" id="vatFromSupply">0원</p>
-                                </div>
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <p class="text-sm text-gray-600 mb-1">합계금액</p>
-                                    <p class="text-xl font-bold text-blue-600" id="totalFromSupply">0원</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Panel - Guide -->
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl p-6 card-shadow">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">부가세 가이드</h3>
+        <!-- VAT Calculator -->
+        <div id="vat-tab" class="tab-content">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center">
+                    <i class="fas fa-calculator mr-2"></i>부가세 계산기
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 합계 금액 계산 -->
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-blue-700">합계 금액을 알고 계신 고객님</h3>
                         <div class="mb-4">
-                            <input type="text" placeholder="부가세 가이드 검색" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none input-focus">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">합계 금액 입력</label>
+                            <input type="number" id="total-amount" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="합계 금액을 입력하세요" oninput="calculateFromTotal()">
                         </div>
-                        <div class="space-y-3">
-                            <div class="p-3 bg-gray-50 rounded-lg">
-                                <h4 class="font-medium text-gray-800 mb-2">1. 부가세란 무엇인가?</h4>
-                                <p class="text-sm text-gray-600">부가가치세는 상품이나 서비스의 거래과정에서 창출되는 부가가치에 대하여 과세하는 세금입니다.</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">공급가액</span>
+                                <div id="supply-from-total" class="text-lg font-bold text-blue-600">0원</div>
                             </div>
-                            <div class="p-3 bg-gray-50 rounded-lg">
-                                <h4 class="font-medium text-gray-800 mb-2">2. 부가세율</h4>
-                                <p class="text-sm text-gray-600">국내 부가세율은 10%입니다. 공급가액 × 10% = 부가세액</p>
-                            </div>
-                            <div class="p-3 bg-gray-50 rounded-lg">
-                                <h4 class="font-medium text-gray-800 mb-2">3. 계산 방법</h4>
-                                <p class="text-sm text-gray-600">합계금액 = 공급가액 + 부가세<br>공급가액 = 합계금액 ÷ 1.1</p>
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">부가세</span>
+                                <div id="vat-from-total" class="text-lg font-bold text-red-600">0원</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
-                        <h3 class="text-lg font-bold mb-3">💡 계산 팁</h3>
-                        <ul class="space-y-2 text-sm">
-                            <li>• 합계금액에서 공급가액을 구할 때: 합계금액 ÷ 1.1</li>
-                            <li>• 공급가액에서 부가세를 구할 때: 공급가액 × 0.1</li>
-                            <li>• 소수점은 반올림하여 계산됩니다</li>
-                        </ul>
+                    <!-- 공급가액 계산 -->
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-green-700">공급가액을 알고 계신 고객님</h3>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">공급가액 입력</label>
+                            <input type="number" id="supply-amount" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="공급가액을 입력하세요" oninput="calculateFromSupply()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">부가세</span>
+                                <div id="vat-from-supply" class="text-lg font-bold text-red-600">0원</div>
+                            </div>
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">합계</span>
+                                <div id="total-from-supply" class="text-lg font-bold text-blue-600">0원</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <p class="text-gray-400">© 2024 편리한 부가세 계산기. 정확하고 빠른 부가세 계산 서비스</p>
+        <!-- Exchange Rate Calculator -->
+        <div id="exchange-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-green-600 mb-6 text-center">
+                    <i class="fas fa-exchange-alt mr-2"></i>환율 계산기
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">기준 통화</label>
+                        <select id="from-currency" class="w-full p-3 border border-gray-300 rounded-lg mb-4" onchange="updateExchangeRate()">
+                            <option value="KRW">KRW (한국 원)</option>
+                            <option value="USD">USD (미국 달러)</option>
+                            <option value="EUR">EUR (유로)</option>
+                            <option value="JPY">JPY (일본 엔)</option>
+                            <option value="CNY">CNY (중국 위안)</option>
+                        </select>
+                        <input type="number" id="from-amount" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="금액 입력" oninput="convertCurrency()">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">변환 통화</label>
+                        <select id="to-currency" class="w-full p-3 border border-gray-300 rounded-lg mb-4" onchange="updateExchangeRate()">
+                            <option value="USD">USD (미국 달러)</option>
+                            <option value="KRW">KRW (한국 원)</option>
+                            <option value="EUR">EUR (유로)</option>
+                            <option value="JPY">JPY (일본 엔)</option>
+                            <option value="CNY">CNY (중국 위안)</option>
+                        </select>
+                        <div id="to-amount" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-lg font-bold">0</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center text-sm text-gray-600">
+                    <span id="exchange-rate-info">환율 정보를 불러오는 중...</span>
+                </div>
             </div>
         </div>
-    </footer>
+
+        <!-- Background Removal -->
+        <div id="background-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-purple-600 mb-6 text-center">
+                    <i class="fas fa-cut mr-2"></i>AI 배경 제거
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">이미지 업로드</h3>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center" id="bg-upload-area">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-4">이미지를 드래그하거나 클릭하여 업로드</p>
+                            <input type="file" id="bg-file-input" accept="image/*" class="hidden" onchange="handleBackgroundFile(event)">
+                            <button onclick="document.getElementById('bg-file-input').click()" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">
+                                파일 선택
+                            </button>
+                        </div>
+                        <div id="bg-original-preview" class="mt-4 hidden">
+                            <h4 class="font-semibold mb-2">원본 이미지</h4>
+                            <img id="bg-original-img" class="max-w-full h-auto border rounded-lg">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">처리 결과</h3>
+                        <div id="bg-result-area" class="border rounded-lg p-4 min-h-[200px] flex items-center justify-center bg-gray-50">
+                            <p class="text-gray-500">처리된 이미지가 여기에 표시됩니다</p>
+                        </div>
+                        <button onclick="removeBackground()" id="bg-process-btn" class="w-full mt-4 bg-purple-500 text-white py-3 rounded-lg hover:bg-purple-600 disabled:bg-gray-400" disabled>
+                            <i class="fas fa-cut mr-2"></i>배경 제거
+                        </button>
+                        <button onclick="downloadProcessedImage('bg')" id="bg-download-btn" class="w-full mt-2 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 hidden">
+                            <i class="fas fa-download mr-2"></i>다운로드
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Upscaling -->
+        <div id="upscale-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-red-600 mb-6 text-center">
+                    <i class="fas fa-expand-arrows-alt mr-2"></i>AI 이미지 확대
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">이미지 업로드</h3>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center" id="upscale-upload-area">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-4">이미지를 드래그하거나 클릭하여 업로드</p>
+                            <input type="file" id="upscale-file-input" accept="image/*" class="hidden" onchange="handleUpscaleFile(event)">
+                            <button onclick="document.getElementById('upscale-file-input').click()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                                파일 선택
+                            </button>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">확대 배율</label>
+                            <select id="upscale-factor" class="w-full p-3 border border-gray-300 rounded-lg">
+                                <option value="2">2배 확대</option>
+                                <option value="4">4배 확대</option>
+                            </select>
+                        </div>
+                        <div id="upscale-original-preview" class="mt-4 hidden">
+                            <h4 class="font-semibold mb-2">원본 이미지</h4>
+                            <img id="upscale-original-img" class="max-w-full h-auto border rounded-lg">
+                            <p id="upscale-original-size" class="text-sm text-gray-600 mt-2"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">확대 결과</h3>
+                        <div id="upscale-result-area" class="border rounded-lg p-4 min-h-[200px] flex items-center justify-center bg-gray-50">
+                            <p class="text-gray-500">확대된 이미지가 여기에 표시됩니다</p>
+                        </div>
+                        <button onclick="upscaleImage()" id="upscale-process-btn" class="w-full mt-4 bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 disabled:bg-gray-400" disabled>
+                            <i class="fas fa-expand-arrows-alt mr-2"></i>이미지 확대
+                        </button>
+                        <button onclick="downloadProcessedImage('upscale')" id="upscale-download-btn" class="w-full mt-2 bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 hidden">
+                            <i class="fas fa-download mr-2"></i>다운로드
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Converter -->
+        <div id="pdf-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center">
+                    <i class="fas fa-file-pdf mr-2"></i>PDF 변환 도구
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 이미지 → PDF -->
+                    <div class="bg-red-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-red-700">
+                            <i class="fas fa-image mr-2"></i>이미지 → PDF
+                        </h3>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
+                            <i class="fas fa-images text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-600 mb-2">이미지 파일을 선택하세요</p>
+                            <input type="file" id="pdf-images-input" accept="image/*" multiple class="hidden" onchange="handlePdfImages(event)">
+                            <button onclick="document.getElementById('pdf-images-input').click()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                                이미지 선택
+                            </button>
+                        </div>
+                        <div id="pdf-images-preview" class="mb-4 hidden">
+                            <h4 class="font-medium mb-2">선택된 이미지:</h4>
+                            <div id="pdf-images-list" class="space-y-2"></div>
+                        </div>
+                        <button onclick="convertImagesToPdf()" id="convert-to-pdf-btn" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 disabled:bg-gray-400" disabled>
+                            <i class="fas fa-file-pdf mr-2"></i>PDF로 변환
+                        </button>
+                    </div>
+
+                    <!-- 텍스트 → PDF -->
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-green-700">
+                            <i class="fas fa-file-alt mr-2"></i>텍스트 → PDF
+                        </h3>
+                        <textarea id="pdf-text-input" rows="8" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="PDF로 변환할 텍스트를 입력하세요..."></textarea>
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">글꼴 크기</label>
+                                <select id="pdf-font-size" class="w-full p-2 border border-gray-300 rounded">
+                                    <option value="12">12pt</option>
+                                    <option value="14" selected>14pt</option>
+                                    <option value="16">16pt</option>
+                                    <option value="18">18pt</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">용지 크기</label>
+                                <select id="pdf-page-size" class="w-full p-2 border border-gray-300 rounded">
+                                    <option value="a4" selected>A4</option>
+                                    <option value="letter">Letter</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="convertTextToPdf()" class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
+                            <i class="fas fa-file-pdf mr-2"></i>PDF로 변환
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lunar Calendar -->
+        <div id="lunar-tab" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-orange-600 mb-6 text-center">
+                    <i class="fas fa-calendar-alt mr-2"></i>음력 달력
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-orange-700">양력 → 음력 변환</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">양력 날짜</label>
+                                <input type="date" id="solar-date" class="w-full p-3 border border-gray-300 rounded-lg" onchange="convertToLunar()">
+                            </div>
+                            <div id="lunar-result" class="bg-white p-4 rounded-lg">
+                                <h4 class="font-semibold mb-2">음력 결과</h4>
+                                <div id="lunar-date-display" class="text-lg text-orange-600 mb-2">날짜를 선택하세요</div>
+                                <div id="lunar-info" class="text-sm text-gray-600"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-blue-700">음력 정보</h3>
+                        <div id="lunar-details" class="space-y-3">
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">간지</span>
+                                <div id="lunar-ganji" class="font-medium">-</div>
+                            </div>
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">절기</span>
+                                <div id="lunar-season" class="font-medium">-</div>
+                            </div>
+                            <div class="bg-white p-3 rounded">
+                                <span class="text-sm text-gray-600">띠</span>
+                                <div id="lunar-zodiac" class="font-medium">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // 숫자를 천 단위로 콤마 추가하여 포맷팅
-        function formatNumber(num) {
-            return Math.round(num).toLocaleString('ko-KR');
+        // RemoveBG API 키 기본값 설정
+        const REMOVEBG_API_KEY = 'bod73sfrPMHTqnQvAJumGgPZ';
+        
+        // Global variables
+        let currentExchangeRates = {};
+        let bgImageFile = null;
+        let upscaleImageFile = null;
+        let processedImages = {
+            bg: null,
+            upscale: null
+        };
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-gray-300', 'text-gray-700');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to selected button
+            document.getElementById('tab-' + tabName).classList.remove('bg-gray-300', 'text-gray-700');
+            document.getElementById('tab-' + tabName).classList.add('bg-blue-500', 'text-white');
         }
 
-        // 합계금액 기준 계산
+        // VAT Calculator Functions
         function calculateFromTotal() {
-            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
-            const supplyAmount = totalAmount / 1.1;
-            const vatAmount = totalAmount - supplyAmount;
-
-            document.getElementById('supplyFromTotal').textContent = formatNumber(supplyAmount) + '원';
-            document.getElementById('vatFromTotal').textContent = formatNumber(vatAmount) + '원';
+            const totalAmount = parseFloat(document.getElementById('total-amount').value) || 0;
+            const supplyPrice = Math.round(totalAmount / 1.1);
+            const vat = totalAmount - supplyPrice;
+            
+            document.getElementById('supply-from-total').textContent = supplyPrice.toLocaleString() + '원';
+            document.getElementById('vat-from-total').textContent = vat.toLocaleString() + '원';
         }
 
-        // 공급가액 기준 계산
         function calculateFromSupply() {
-            const supplyAmount = parseFloat(document.getElementById('supplyAmount').value) || 0;
-            const vatAmount = supplyAmount * 0.1;
-            const totalAmount = supplyAmount + vatAmount;
-
-            document.getElementById('vatFromSupply').textContent = formatNumber(vatAmount) + '원';
-            document.getElementById('totalFromSupply').textContent = formatNumber(totalAmount) + '원';
+            const supplyAmount = parseFloat(document.getElementById('supply-amount').value) || 0;
+            const vat = Math.round(supplyAmount * 0.1);
+            const total = supplyAmount + vat;
+            
+            document.getElementById('vat-from-supply').textContent = vat.toLocaleString() + '원';
+            document.getElementById('total-from-supply').textContent = total.toLocaleString() + '원';
         }
 
-        // 이벤트 리스너 등록
-        document.getElementById('totalAmount').addEventListener('input', calculateFromTotal);
-        document.getElementById('supplyAmount').addEventListener('input', calculateFromSupply);
+        // Exchange Rate Functions
+        async function updateExchangeRate() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await response.json();
+                currentExchangeRates = data.rates;
+                
+                const fromCurrency = document.getElementById('from-currency').value;
+                const toCurrency = document.getElementById('to-currency').value;
+                
+                document.getElementById('exchange-rate-info').textContent = 
+                    `1 ${fromCurrency} = ${getExchangeRate(fromCurrency, toCurrency).toFixed(4)} ${toCurrency}`;
+                
+                convertCurrency();
+            } catch (error) {
+                document.getElementById('exchange-rate-info').textContent = '환율 정보를 가져올 수 없습니다.';
+            }
+        }
 
-        // 초기 계산 실행
-        calculateFromTotal();
-        calculateFromSupply();
+        function getExchangeRate(from, to) {
+            if (from === 'USD') return currentExchangeRates[to] || 1;
+            if (to === 'USD') return 1 / (currentExchangeRates[from] || 1);
+            return (currentExchangeRates[to] || 1) / (currentExchangeRates[from] || 1);
+        }
+
+        function convertCurrency() {
+            const fromAmount = parseFloat(document.getElementById('from-amount').value) || 0;
+            const fromCurrency = document.getElementById('from-currency').value;
+            const toCurrency = document.getElementById('to-currency').value;
+            
+            if (currentExchangeRates.USD) {
+                const rate = getExchangeRate(fromCurrency, toCurrency);
+                const toAmount = fromAmount * rate;
+                document.getElementById('to-amount').textContent = toAmount.toFixed(2);
+            }
+        }
+
+        // Background Removal Functions
+        function handleBackgroundFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                bgImageFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('bg-original-img');
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        // 원본 이미지 크기 표시
+                        console.log(`원본 크기: ${this.naturalWidth} x ${this.naturalHeight}`);
+                    };
+                    
+                    document.getElementById('bg-original-preview').classList.remove('hidden');
+                    document.getElementById('bg-process-btn').disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function removeBackground() {
+            if (!bgImageFile) return;
+            
+            const processBtn = document.getElementById('bg-process-btn');
+            processBtn.textContent = '처리 중...';
+            processBtn.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                formData.append('image_file', bgImageFile);
+                formData.append('size', 'auto');
+                
+                const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': REMOVEBG_API_KEY
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    
+                    // 원본 이미지 크기 유지
+                    const originalImg = document.getElementById('bg-original-img');
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const processedImg = new Image();
+                    processedImg.onload = function() {
+                        // 원본 크기로 캔버스 설정
+                        canvas.width = originalImg.naturalWidth;
+                        canvas.height = originalImg.naturalHeight;
+                        
+                        // 이미지를 원본 크기로 그리기
+                        ctx.drawImage(processedImg, 0, 0, canvas.width, canvas.height);
+                        
+                        // 결과 표시
+                        canvas.toBlob(function(finalBlob) {
+                            const finalUrl = URL.createObjectURL(finalBlob);
+                            
+                            document.getElementById('bg-result-area').innerHTML = `
+                                <div class="text-center">
+                                    <img src="${finalUrl}" class="max-w-full h-auto mx-auto border rounded-lg checkerboard-bg">
+                                    <p class="text-sm text-gray-600 mt-2">크기: ${canvas.width} x ${canvas.height}</p>
+                                </div>
+                            `;
+                            
+                            processedImages.bg = finalBlob;
+                            document.getElementById('bg-download-btn').classList.remove('hidden');
+                        }, 'image/png');
+                    };
+                    processedImg.src = url;
+                } else {
+                    throw new Error('배경 제거 실패');
+                }
+            } catch (error) {
+                alert('배경 제거 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                processBtn.textContent = '배경 제거';
+                processBtn.disabled = false;
+            }
+        }
+
+        // Image Upscaling Functions
+        function handleUpscaleFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                upscaleImageFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('upscale-original-img');
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        document.getElementById('upscale-original-size').textContent = 
+                            `원본 크기: ${this.naturalWidth} x ${this.naturalHeight}`;
+                    };
+                    
+                    document.getElementById('upscale-original-preview').classList.remove('hidden');
+                    document.getElementById('upscale-process-btn').disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function upscaleImage() {
+            if (!upscaleImageFile) return;
+            
+            const processBtn = document.getElementById('upscale-process-btn');
+            const factor = parseInt(document.getElementById('upscale-factor').value);
+            
+            processBtn.textContent = '확대 처리 중...';
+            processBtn.disabled = true;
+            
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const img = new Image();
+                img.onload = function() {
+                    const originalWidth = img.naturalWidth;
+                    const originalHeight = img.naturalHeight;
+                    
+                    // 확대된 크기 계산
+                    canvas.width = originalWidth * factor;
+                    canvas.height = originalHeight * factor;
+                    
+                    // 고품질 업스케일링을 위한 설정
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    
+                    // 단계별 업스케일링으로 품질 향상
+                    if (factor === 4) {
+                        // 4배는 2번에 나누어 처리
+                        const tempCanvas = document.createElement('canvas');
+                        const tempCtx = tempCanvas.getContext('2d');
+                        
+                        // 첫 번째 단계: 2배 확대
+                        tempCanvas.width = originalWidth * 2;
+                        tempCanvas.height = originalHeight * 2;
+                        tempCtx.imageSmoothingEnabled = true;
+                        tempCtx.imageSmoothingQuality = 'high';
+                        tempCtx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+                        
+                        // 두 번째 단계: 다시 2배 확대
+                        ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height);
+                    } else {
+                        // 2배는 직접 확대
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    }
+                    
+                    // 선명화 필터 적용
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const sharpened = applySharpenFilter(imageData);
+                    ctx.putImageData(sharpened, 0, 0);
+                    
+                    // 결과 표시
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        
+                        document.getElementById('upscale-result-area').innerHTML = `
+                            <div class="text-center">
+                                <img src="${url}" class="max-w-full h-auto mx-auto border rounded-lg">
+                                <p class="text-sm text-gray-600 mt-2">확대 크기: ${canvas.width} x ${canvas.height}</p>
+                                <p class="text-sm text-green-600">품질 향상 적용됨</p>
+                            </div>
+                        `;
+                        
+                        processedImages.upscale = blob;
+                        document.getElementById('upscale-download-btn').classList.remove('hidden');
+                    }, 'image/png');
+                };
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(upscaleImageFile);
+                
+            } catch (error) {
+                alert('이미지 확대 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                processBtn.textContent = '이미지 확대';
+                processBtn.disabled = false;
+            }
+        }
+
+        // 선명화 필터 함수
+        function applySharpenFilter(imageData) {
+            const data = imageData.data;
+            const width = imageData.width;
+            const height = imageData.height;
+            const output = new ImageData(width, height);
+            
+            // 선명화 커널
+            const kernel = [
+                0, -1, 0,
+                -1, 5, -1,
+                0, -1, 0
+            ];
+            
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    for (let c = 0; c < 3; c++) { // RGB 채널만
+                        let sum = 0;
+                        for (let ky = -1; ky <= 1; ky++) {
+                            for (let kx = -1; kx <= 1; kx++) {
+                                const idx = ((y + ky) * width + (x + kx)) * 4 + c;
+                                sum += data[idx] * kernel[(ky + 1) * 3 + (kx + 1)];
+                            }
+                        }
+                        const outputIdx = (y * width + x) * 4 + c;
+                        output.data[outputIdx] = Math.max(0, Math.min(255, sum));
+                    }
+                    // 알파 채널 복사
+                    const alphaIdx = (y * width + x) * 4 + 3;
+                    output.data[alphaIdx] = data[alphaIdx];
+                }
+            }
+            
+            return output;
+        }
+
+        // Download processed images
+        function downloadProcessedImage(type) {
+            const blob = processedImages[type];
+            if (!blob) return;
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = type === 'bg' ? 'background-removed.png' : 'upscaled-image.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // PDF Functions
+        function handlePdfImages(event) {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                const listElement = document.getElementById('pdf-images-list');
+                listElement.innerHTML = '';
+                
+                files.forEach((file, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between bg-gray-100 p-2 rounded';
+                    div.innerHTML = `
+                        <span class="text-sm">${file.name}</span>
+                        <span class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>
+                    `;
+                    listElement.appendChild(div);
+                });
+                
+                document.getElementById('pdf-images-preview').classList.remove('hidden');
+                document.getElementById('convert-to-pdf-btn').disabled = false;
+            }
+        }
+
+        async function convertImagesToPdf() {
+            const files = document.getElementById('pdf-images-input').files;
+            if (files.length === 0) return;
+            
+            try {
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    let image;
+                    if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                        image = await pdfDoc.embedJpg(arrayBuffer);
+                    } else if (file.type === 'image/png') {
+                        image = await pdfDoc.embedPng(arrayBuffer);
+                    } else {
+                        continue; // 지원하지 않는 형식 건너뛰기
+                    }
+                    
+                    const page = pdfDoc.addPage();
+                    const { width, height } = page.getSize();
+                    
+                    // 이미지 크기에 맞게 페이지 조정
+                    const imageAspectRatio = image.width / image.height;
+                    const pageAspectRatio = width / height;
+                    
+                    let drawWidth, drawHeight;
+                    if (imageAspectRatio > pageAspectRatio) {
+                        drawWidth = width - 40; // 여백
+                        drawHeight = drawWidth / imageAspectRatio;
+                    } else {
+                        drawHeight = height - 40; // 여백
+                        drawWidth = drawHeight * imageAspectRatio;
+                    }
+                    
+                    page.drawImage(image, {
+                        x: (width - drawWidth) / 2,
+                        y: (height - drawHeight) / 2,
+                        width: drawWidth,
+                        height: drawHeight,
+                    });
+                }
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'converted-images.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                alert('PDF 변환 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        function convertTextToPdf() {
+            const text = document.getElementById('pdf-text-input').value;
+            if (!text.trim()) {
+                alert('변환할 텍스트를 입력하세요.');
+                return;
+            }
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const fontSize = parseInt(document.getElementById('pdf-font-size').value);
+                doc.setFontSize(fontSize);
+                
+                // 텍스트를 페이지에 맞게 분할
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 20;
+                const lineHeight = fontSize * 0.4;
+                
+                const lines = doc.splitTextToSize(text, pageWidth - 2 * margin);
+                let y = margin + fontSize;
+                
+                lines.forEach((line, index) => {
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin + fontSize;
+                    }
+                    doc.text(line, margin, y);
+                    y += lineHeight;
+                });
+                
+                doc.save('converted-text.pdf');
+                
+            } catch (error) {
+                alert('PDF 변환 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        // Lunar Calendar Functions
+        function convertToLunar() {
+            const solarDate = document.getElementById('solar-date').value;
+            if (!solarDate) return;
+            
+            const date = new Date(solarDate);
+            const lunarInfo = getLunarDate(date);
+            
+            document.getElementById('lunar-date-display').textContent = lunarInfo.lunar;
+            document.getElementById('lunar-info').textContent = lunarInfo.info;
+            document.getElementById('lunar-ganji').textContent = lunarInfo.ganji;
+            document.getElementById('lunar-season').textContent = lunarInfo.season;
+            document.getElementById('lunar-zodiac').textContent = lunarInfo.zodiac;
+        }
+
+        function getLunarDate(solarDate) {
+            // 간단한 음력 변환 (실제로는 더 복잡한 계산이 필요)
+            const year = solarDate.getFullYear();
+            const month = solarDate.getMonth() + 1;
+            const day = solarDate.getDate();
+            
+            // 근사치 계산 (실제 음력 변환은 복잡한 천문 계산이 필요)
+            const lunarMonth = month - 1 <= 0 ? 12 + (month - 1) : month - 1;
+            const lunarDay = day - 15 <= 0 ? 30 + (day - 15) : day - 15;
+            
+            const ganjiYear = getGanji(year);
+            const zodiac = getZodiac(year);
+            const season = getSeason(month, day);
+            
+            return {
+                lunar: `${year}년 ${lunarMonth}월 ${lunarDay}일`,
+                info: `음력 날짜 (근사치)`,
+                ganji: ganjiYear,
+                season: season,
+                zodiac: zodiac
+            };
+        }
+
+        function getGanji(year) {
+            const gan = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
+            const ji = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해'];
+            
+            const ganIndex = (year - 4) % 10;
+            const jiIndex = (year - 4) % 12;
+            
+            return gan[ganIndex] + ji[jiIndex];
+        }
+
+        function getZodiac(year) {
+            const zodiac = ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지'];
+            return zodiac[(year - 4) % 12];
+        }
+
+        function getSeason(month, day) {
+            const seasons = {
+                '입춘': [2, 4], '우수': [2, 19], '경칩': [3, 6], '춘분': [3, 21],
+                '청명': [4, 5], '곡우': [4, 20], '입하': [5, 6], '소만': [5, 21],
+                '망종': [6, 6], '하지': [6, 21], '소서': [7, 7], '대서': [7, 23],
+                '입추': [8, 8], '처서': [8, 23], '백로': [9, 8], '추분': [9, 23],
+                '한로': [10, 8], '상강': [10, 23], '입동': [11, 7], '소설': [11, 22],
+                '대설': [12, 7], '동지': [12, 22], '소한': [1, 6], '대한': [1, 21]
+            };
+            
+            for (const [season, [m, d]] of Object.entries(seasons)) {
+                if (month === m && Math.abs(day - d) <= 3) {
+                    return season;
+                }
+            }
+            
+            return '해당 없음';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateExchangeRate();
+            
+            // Set today's date for lunar calendar
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('solar-date').value = today;
+            convertToLunar();
+        });
+
+        // Add checkerboard background style for transparent images
+        const style = document.createElement('style');
+        style.textContent = `
+            .checkerboard-bg {
+                background-image: 
+                    linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                    linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+                background-size: 20px 20px;
+                background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"954229196da0d48f","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.6.2","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
 </body>
 </html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDth2R%2FRXSSBB7L4Xzoeq%2BliQ1FzalW5aZljPTfzrSiq1LoedSKql2ZmQ7cjVAb%2F0bhc4HuOpDYoA4S3mNUu2AkEgFfAlU63NC12VgIcwhnQ0ezyfrNTHInCy5CfY8W1Oxr5iuTNZ%2Fkdd9qxxIgbjBt%2BTpcq7E2kxxCfFejA4Q0UZBbB8kyINa8vUKQVtX4qX22f%2B5452%2BckytBoSVzYXXgMPkw8PDSMeDg3Vv%2BPO6RENDGaU5nZ7J%2Bkh%2BGPrhHUDzK6M3tRghyvgbffgUJLI6l9cYwCl5db9sL4McRcZ0GhFdUc0ygNq8zslg2hmA9JOqz8yLGQSEBEnivkJPBr0TE%2BRBy%2BE7pNJBEhuq1ytKo6YnPBYh7kS3zb4K00yHMc0DV1zAUbCKo19ddFfEFeTtCAUsaNhjtyCDfECYLWW%2FTUGNJeDu0krTsoxQ1fmghfuhI2u0mJ9q0deP8Wnw1QDUrpFaLEq5BoRE%2FQHO9a0yUgZRcFKZgnRNeHj96BIIUJX5FLfr0hWKLmHr%2BMqiygYHfg%3D";
+        window.__genspark_locale = "ko-KR";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDth2R/RXSSBB7L4Xzoeq+liQ1FzalW5aZljPTfzrSiq1LoedSKql2ZmQ7cjVAb/0bhc4HuOpDYoA4S3mNUu2AkEgFfAlU63NC12VgIcwhnQ0ezyfrNTHInCy5CfY8W1Oxr5iuTNZ/kdd9qxxIgbjBt+Tpcq7E2kxxCfFejA4Q0UZBbB8kyINa8vUKQVtX4qX22f+5452+ckytBoSVzYXXgMPkw8PDSMeDg3Vv+PO6RENDGaU5nZ7J+kh+GPrhHUDzK6M3tRghyvgbffgUJLI6l9cYwCl5db9sL4McRcZ0GhFdUc0ygNq8zslg2hmA9JOqz8yLGQSEBEnivkJPBr0TE+RBy+E7pNJBEhuq1ytKo6YnPBYh7kS3zb4K00yHMc0DV1zAUbCKo19ddFfEFeTtCAUsaNhjtyCDfECYLWW/TUGNJeDu0krTsoxQ1fmghfuhI2u0mJ9q0deP8Wnw1QDUrpFaLEq5BoRE/QHO9a0yUgZRcFKZgnRNeHj96BIIUJX5FLfr0hWKLmHr+MqiygYHfg=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    
