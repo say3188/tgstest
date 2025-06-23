@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>편리한 부가세 계산기</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .input-focus:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold text-blue-600">편리한 부가세 계산기</h1>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" class="text-blue-600 font-medium">부가세 계산기</a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600">맞춤법 검사기</a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600">만 나이 계산기</a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600">내 아이피주소 확인</a>
+                        <a href="#" class="text-gray-600 hover:text-blue-600">글자수 세기</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Banner -->
+    <section class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <div class="bg-white bg-opacity-20 rounded-full px-6 py-3 inline-block mb-4">
+                        <span class="text-white font-medium">계산서를 잘 발급했는지 궁금하신가요?</span>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">정확한 부가세 계산기</h2>
+                    <p class="text-xl text-blue-100">빠르고 정확한 부가세 계산을 위한 최고의 도구</p>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="bg-white bg-opacity-20 rounded-2xl p-6">
+                        <i class="fas fa-calculator text-6xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Panel - Calculators -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Total Amount Calculator -->
+                    <div class="bg-white rounded-2xl p-8 card-shadow">
+                        <div class="gradient-bg text-white rounded-xl p-6 mb-6">
+                            <h3 class="text-2xl font-bold mb-2">합계 금액을 알고 계신 고객님</h3>
+                            <p class="text-blue-100">합계금액(TOTAL)</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">금액을 입력해주세요</label>
+                                <div class="relative">
+                                    <input type="number" id="totalAmount" placeholder="0" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus text-lg">
+                                    <span class="absolute right-4 top-3 text-gray-500">원</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-1">공급가액</p>
+                                    <p class="text-xl font-bold text-blue-600" id="supplyFromTotal">0원</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-1">부가세</p>
+                                    <p class="text-xl font-bold text-blue-600" id="vatFromTotal">0원</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supply Value Calculator -->
+                    <div class="bg-white rounded-2xl p-8 card-shadow">
+                        <div class="gradient-bg text-white rounded-xl p-6 mb-6">
+                            <h3 class="text-2xl font-bold mb-2">공급가액을 알고 계신 고객님</h3>
+                            <p class="text-blue-100">공급가액(VALUE OF SUPPLY)</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">금액을 입력해주세요</label>
+                                <div class="relative">
+                                    <input type="number" id="supplyAmount" placeholder="0" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus text-lg">
+                                    <span class="absolute right-4 top-3 text-gray-500">원</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-1">부가세</p>
+                                    <p class="text-xl font-bold text-blue-600" id="vatFromSupply">0원</p>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-1">합계금액</p>
+                                    <p class="text-xl font-bold text-blue-600" id="totalFromSupply">0원</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Guide -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 card-shadow">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">부가세 가이드</h3>
+                        <div class="mb-4">
+                            <input type="text" placeholder="부가세 가이드 검색" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none input-focus">
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <h4 class="font-medium text-gray-800 mb-2">1. 부가세란 무엇인가?</h4>
+                                <p class="text-sm text-gray-600">부가가치세는 상품이나 서비스의 거래과정에서 창출되는 부가가치에 대하여 과세하는 세금입니다.</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <h4 class="font-medium text-gray-800 mb-2">2. 부가세율</h4>
+                                <p class="text-sm text-gray-600">국내 부가세율은 10%입니다. 공급가액 × 10% = 부가세액</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <h4 class="font-medium text-gray-800 mb-2">3. 계산 방법</h4>
+                                <p class="text-sm text-gray-600">합계금액 = 공급가액 + 부가세<br>공급가액 = 합계금액 ÷ 1.1</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+                        <h3 class="text-lg font-bold mb-3">💡 계산 팁</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• 합계금액에서 공급가액을 구할 때: 합계금액 ÷ 1.1</li>
+                            <li>• 공급가액에서 부가세를 구할 때: 공급가액 × 0.1</li>
+                            <li>• 소수점은 반올림하여 계산됩니다</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">© 2024 편리한 부가세 계산기. 정확하고 빠른 부가세 계산 서비스</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 숫자를 천 단위로 콤마 추가하여 포맷팅
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('ko-KR');
+        }
+
+        // 합계금액 기준 계산
+        function calculateFromTotal() {
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+            const supplyAmount = totalAmount / 1.1;
+            const vatAmount = totalAmount - supplyAmount;
+
+            document.getElementById('supplyFromTotal').textContent = formatNumber(supplyAmount) + '원';
+            document.getElementById('vatFromTotal').textContent = formatNumber(vatAmount) + '원';
+        }
+
+        // 공급가액 기준 계산
+        function calculateFromSupply() {
+            const supplyAmount = parseFloat(document.getElementById('supplyAmount').value) || 0;
+            const vatAmount = supplyAmount * 0.1;
+            const totalAmount = supplyAmount + vatAmount;
+
+            document.getElementById('vatFromSupply').textContent = formatNumber(vatAmount) + '원';
+            document.getElementById('totalFromSupply').textContent = formatNumber(totalAmount) + '원';
+        }
+
+        // 이벤트 리스너 등록
+        document.getElementById('totalAmount').addEventListener('input', calculateFromTotal);
+        document.getElementById('supplyAmount').addEventListener('input', calculateFromSupply);
+
+        // 초기 계산 실행
+        calculateFromTotal();
+        calculateFromSupply();
+    </script>
+</body>
+</html>
